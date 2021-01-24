@@ -1,24 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:view="clr-namespace:Drapp.Metronome.View;assembly=Drapp"
              x:Class="Drapp.MainPage">
     <ScrollView>
     <StackLayout Margin="10,35,10,10">
-        <Label Text="Test Metronome"
-               HorizontalOptions="Center"
-               FontAttributes="Bold" />
-        <BoxView x:Name="box" Color="Bisque" WidthRequest="200" HeightRequest="150"></BoxView>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Button Text="Play"
-                    Clicked="OnPlayButton" />
-            <Button Grid.Column="1"
-                    Text="Stop"
-                    Clicked="OnStopButton"/>
-        </Grid>
+        <view:MetronomeView/>
     </StackLayout>
     </ScrollView>
 </ContentPage>

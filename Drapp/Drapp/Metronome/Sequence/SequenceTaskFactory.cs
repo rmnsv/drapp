@@ -20,9 +20,12 @@ namespace Drapp.Metronome.Sequence
                                 break;
                             }
 
-                            if (item.Time > 0)
+                            int itemTime = (int) item.GetTime();
+
+                            if (itemTime > 0)
                             {
-                                await Task.Delay(item.Time, cancellationToken);
+                                //TODO: fractioned ms
+                                await Task.Delay(itemTime, cancellationToken);
                             }
 
                             item.Action?.Invoke();

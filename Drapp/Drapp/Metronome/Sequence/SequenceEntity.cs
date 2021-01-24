@@ -5,13 +5,22 @@ namespace Drapp.Metronome.Sequence
 {
     internal class SequenceEntity
     {
-        private int _mainInterval;
+        private float _mainInterval;
         internal List<SequenceItem> Items;
 
-        internal SequenceEntity(int mainInterval, List<SequenceItem> sequenceItems)
+        internal SequenceEntity(float mainInterval, List<SequenceItem> sequenceItems)
         {
             _mainInterval = mainInterval;
             Items = sequenceItems;
+        }
+
+        internal void UpdateMsInterval(float newInterval)
+        {
+            _mainInterval = newInterval;
+            foreach (SequenceItem item in Items)
+            {
+                item.UpdateTime(_mainInterval);
+            }
         }
 
         internal void InsertAt(int time, Action action)

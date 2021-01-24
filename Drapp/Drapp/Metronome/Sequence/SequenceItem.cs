@@ -4,13 +4,29 @@ namespace Drapp.Metronome.Sequence
 {
     public class SequenceItem
     {
-        internal readonly int Time;
+        private readonly byte _segments;
+        private readonly byte _maxSegments;
         internal readonly Action Action;
+        
+        private float _time;
 
-        internal SequenceItem(int time, Action action)
+        internal SequenceItem(float mainInterval, byte segments, byte maxSegments, Action action)
         {
-            Time = time;
+            _segments = segments;
+            _maxSegments = maxSegments;
             Action = action;
+            
+            UpdateTime(mainInterval);
+        }
+
+        internal float GetTime()
+        {
+            return _time;
+        }
+
+        internal void UpdateTime(float mainInterval)
+        {
+            _time = mainInterval * _segments / _maxSegments;
         }
     }
 }
