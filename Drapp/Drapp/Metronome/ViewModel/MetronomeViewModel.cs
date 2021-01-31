@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
 using Drapp.Metronome.Model;
 using Xamarin.Forms;
@@ -16,41 +18,89 @@ namespace Drapp.Metronome.ViewModel
         public ICommand StopCommand { get; }
         public ICommand IncreaseBpmBy10Command { get; }
         public ICommand DecreaseBpmBy10Command { get; }
+        public List<Pattern> Patterns { get; set; }
 
         private readonly MetronomeModel _metronomeModel;
         private readonly MetronomePlayer _metronomePlayer;
 
-        public MetronomeViewModel(Color indicatorColor, byte bpm, Pattern pattern)
+        public MetronomeViewModel(byte bpm)
         {
+            PatternFabric patternFabric = new PatternFabric();
+            Patterns = patternFabric.CreateStandardPatterns();
+            
             _metronomeModel = new MetronomeModel()
             {
-                IndicatorColor = indicatorColor,
                 Bpm = bpm,
-                Pattern = pattern
+                Pattern = Patterns.First()
             };
 
             _metronomePlayer = new MetronomePlayer(_metronomeModel);
             
-            _metronomePlayer.OnVisualAccentBegin += OnAccentBegin;
-            _metronomePlayer.OnVisualAccentEnd += OnAccentEnd;
-            _metronomePlayer.OnVisualClickBegin += OnClickBegin;
-            _metronomePlayer.OnVisualClickEnd += OnClickEnd;
+            _metronomePlayer.OnVisualBeatOn += OnIndicatorOn;
+            _metronomePlayer.OnVisualBeatOff += OnIndicatorOff;
 
             PlayCommand = new Command(Play);
             StopCommand = new Command(Stop);
             IncreaseBpmBy10Command = new Command(IncreaseBpmBy10);
             DecreaseBpmBy10Command = new Command(DecreaseBpmBy10);
         }
-        
-        public Color IndicatorColor
+
+        private void OnIndicatorOn(BeatType beatType)
         {
-            get => _metronomeModel.IndicatorColor;
+            switch (beatType)
+            {
+                case BeatType.Accented:
+                    AccentIndicatorColor = Color.Chartreuse;
+                    break;
+                case BeatType.Unaccented:
+                    UnaccentIndicatorColor = Color.Aquamarine;
+                    break;
+            }
+            BeatIndicatorColor = Color.Coral;
+        }
+        
+        private void OnIndicatorOff()
+        {
+            AccentIndicatorColor = Color.Black;
+            UnaccentIndicatorColor = Color.Black;
+            BeatIndicatorColor = Color.Black;
+        }
+
+        public Color AccentIndicatorColor
+        {
+            get => _metronomeModel.AccentIndicatorColor;
             set
             {
-                if (_metronomeModel.IndicatorColor != value)
+                if (_metronomeModel.AccentIndicatorColor != value)
                 {
-                    _metronomeModel.IndicatorColor = value;
-                    OnPropertyChanged("IndicatorColor");
+                    _metronomeModel.AccentIndicatorColor = value;
+                    OnPropertyChanged("AccentIndicatorColor");
+                }
+            }
+        }
+        
+        public Color UnaccentIndicatorColor
+        {
+            get => _metronomeModel.UnaccentIndicatorColor;
+            set
+            {
+                if (_metronomeModel.UnaccentIndicatorColor != value)
+                {
+                    _metronomeModel.UnaccentIndicatorColor = value;
+                    OnPropertyChanged("UnaccentIndicatorColor");
+                }
+            }
+        }
+        
+        public Color BeatIndicatorColor
+        {
+            get => _metronomeModel.BeatIndicatorColor;
+            set
+            {
+                if (_metronomeModel.BeatIndicatorColor != value)
+                {
+                    _metronomeModel.BeatIndicatorColor = value;
+                    OnPropertyChanged("BeatIndicatorColor");
                 }
             }
         }
@@ -74,9 +124,10 @@ namespace Drapp.Metronome.ViewModel
             get => _metronomeModel.Pattern;
             set
             {
-                if (_metronomeModel.Pattern != value)
+                if (value != null && _metronomeModel.Pattern != value)
                 {
                     _metronomeModel.Pattern = value;
+                    _metronomePlayer?.SetPattern(value);
                     OnPropertyChanged("Pattern");
                 }
             }
@@ -100,26 +151,6 @@ namespace Drapp.Metronome.ViewModel
         private void DecreaseBpmBy10()
         {
             Bpm -= 10;
-        }
-
-        private void OnClickBegin()
-        {
-            IndicatorColor = Color.Aquamarine;
-        }
-        
-        private void OnClickEnd()
-        {
-            IndicatorColor = Color.Bisque;
-        }
-        
-        private void OnAccentBegin()
-        {
-            IndicatorColor = Color.Indigo;
-        }
-        
-        private void OnAccentEnd()
-        {
-            IndicatorColor = Color.Bisque;
         }
 
         protected void OnPropertyChanged(string propName)

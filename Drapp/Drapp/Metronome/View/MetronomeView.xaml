@@ -3,22 +3,36 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Drapp.Metronome.View.MetronomeView">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <Color x:Key="indicatorOff">#004D40</Color>
+            <Color x:Key="indicatorAccented">#004D40</Color>
+            <Color x:Key="indicatorUnaccented">#004D40</Color>
+            <Color x:Key="indicatorBeat">#004D40</Color>
+        </ResourceDictionary>
+    </ContentView.Resources>
     <ContentView.Content>
         <StackLayout>
             <Label Text="Test Metronome"
                    HorizontalOptions="Center"
                    FontAttributes="Bold" />
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70" />
+                    <RowDefinition Height="100"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Button Text="+10" Command="{Binding IncreaseBpmBy10Command}" />
-                <Label Grid.Column="1" Text="{Binding Bpm}" />
-                <Button Grid.Column="2" Text="-10" Command="{Binding DecreaseBpmBy10Command}" />
+                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Bpm}" />
+                <Button Grid.Row="0" Grid.Column="2" Text="-10" Command="{Binding DecreaseBpmBy10Command}" />
+                <BoxView Grid.Column="0" Grid.Row="1" x:Name="AccentIndicator" Color="{Binding AccentIndicatorColor}"></BoxView>
+                <BoxView Grid.Column="1" Grid.Row="1" x:Name="UnaccentIndicator" Color="{Binding UnaccentIndicatorColor}"></BoxView>
+                <BoxView Grid.Column="2" Grid.Row="1" x:Name="BeatIndicator" Color="{Binding BeatIndicatorColor}"></BoxView>
             </Grid>
-            <BoxView x:Name="IndicatorBox" Color="{Binding IndicatorColor}" WidthRequest="200" HeightRequest="150"></BoxView>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -27,6 +41,22 @@
                 <Button Text="Play" Command="{Binding PlayCommand}" />
                 <Button Grid.Column="1" Text="Stop" Command="{Binding StopCommand}"/>
             </Grid>
+            <ListView x:Name="PatternsList"
+                      HasUnevenRows="True"
+                      ItemsSource="{Binding Patterns}"
+                      SelectedItem="{Binding Pattern}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <StackLayout>
+                                    <Label Text="{Binding DisplayName}" FontSize="18" />
+                                </StackLayout>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
     </ContentView.Content>
 </ContentView>

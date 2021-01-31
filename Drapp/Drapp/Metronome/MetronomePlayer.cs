@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Drapp.Metronome.Model;
@@ -9,6 +8,7 @@ namespace Drapp.Metronome
 {
     internal class MetronomePlayer
     {
+
         private bool _isPlaying;
         private float _mainInterval;
 
@@ -20,10 +20,8 @@ namespace Drapp.Metronome
         private Task _metronomeTask;
         private CancellationTokenSource _cancellationTokenSource;
 
-        public event Action OnVisualAccentBegin;
-        public event Action OnVisualAccentEnd;
-        public event Action OnVisualClickBegin;
-        public event Action OnVisualClickEnd;
+        public event Action<BeatType> OnVisualBeatOn;
+        public event Action OnVisualBeatOff;
 
         public MetronomePlayer(MetronomeModel model)
         {
@@ -37,50 +35,22 @@ namespace Drapp.Metronome
         //TODO: input
         private SequenceEntity BuildSequence(float mainInterval, Pattern pattern)
         {
-            /* TODO: tired, think about it later
-            Dictionary<byte, bool> patternInner = pattern.PatternInner;
-            byte maxSegmentation = pattern.MaxSegmentation;
-
-            int subIntervals = mainInterval / maxSegmentation;
+            SequenceEntity sequence = new SequenceEntity(mainInterval, pattern.MaxSegmentation);
             
-            Dictionary<int, Action> resultDict = new Dictionary<int, Action>() {
-                { 0, () => Console.WriteLine("Main interval begin!")},
-                {mainInterval, () => Console.WriteLine("Main interval end!")}
-            };
+            sequence.AddItem(0, () => Console.WriteLine("Main interval begin!"));
 
-            foreach (KeyValuePair<byte,bool> pair in patternInner)
+            foreach (var item in pattern.PatternInner)
             {
-                if (pair.Key == 0)
+                sequence.AddItem(item.Key, () =>
                 {
-                    if (pair.Value)
-                    {
-                        resultDict[0] += () => OnVisualAccentBegin?.Invoke();
-                    }
-                    else
-                    {
-                        resultDict[0] += () => OnVisualClickBegin?.Invoke();
-                    }
-                }
+                    OnVisualBeatOn?.Invoke(item.Value);
+                });
+                sequence.AddItem((byte) (item.Key + 1), () => OnVisualBeatOff?.Invoke());
             }
+            
+            sequence.AddItem((byte) (pattern.MaxSegmentation - 1), () => Console.WriteLine("Main interval end!"));
 
-            return resultDict;*/
-
-            return new SequenceEntity(mainInterval, new List<SequenceItem>()
-            {
-                new SequenceItem(mainInterval, 0, pattern.MaxSegmentation,() =>
-                {
-                    Console.WriteLine("Main interval begin!");
-                    OnVisualAccentBegin?.Invoke();
-                }),
-                new SequenceItem(mainInterval, _visualDimTime, pattern.MaxSegmentation, () => OnVisualAccentEnd?.Invoke()),
-                new SequenceItem(mainInterval, 6, pattern.MaxSegmentation,() => OnVisualClickBegin?.Invoke()),
-                new SequenceItem(mainInterval, _visualDimTime, pattern.MaxSegmentation,() => OnVisualClickEnd?.Invoke()),
-                new SequenceItem(mainInterval, 6, pattern.MaxSegmentation,() => OnVisualClickBegin?.Invoke()),
-                new SequenceItem(mainInterval, _visualDimTime, pattern.MaxSegmentation,() => OnVisualClickEnd?.Invoke()),
-                new SequenceItem(mainInterval, 6, pattern.MaxSegmentation,() => OnVisualClickBegin?.Invoke()),
-                new SequenceItem(mainInterval, _visualDimTime, pattern.MaxSegmentation,() => OnVisualClickEnd?.Invoke()),
-                new SequenceItem(mainInterval, 6, pattern.MaxSegmentation,() => Console.WriteLine("Main interval end!")),
-            });
+            return sequence;
         }
 
         private void Reset()
@@ -120,14 +90,29 @@ namespace Drapp.Metronome
 
             _cancellationTokenSource.Cancel();
             _isPlaying = false;
+            OnVisualBeatOff?.Invoke();
 
             Console.WriteLine("Metronome stopped!");
         }
 
-        public void SetBpm(byte newBpm)
+        internal void SetBpm(byte newBpm)
         {
-            _mainInterval = MetronomeUtil.BpmToMs(newBpm) * 4;
+            _mainInterval = CalculateMainInterval(newBpm);
             _sequence.UpdateMsInterval(_mainInterval);
         }
+
+        internal void SetPattern(Pattern newPattern)
+        {
+            if (_isPlaying)
+            {
+                Stop();
+                _sequence = BuildSequence(_mainInterval, newPattern);
+                Play();
+            }
+            else
+            {
+                _sequence = BuildSequence(_mainInterval, newPattern);
+            }
+        } 
     }
 }

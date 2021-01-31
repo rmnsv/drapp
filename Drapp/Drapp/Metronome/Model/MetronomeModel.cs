@@ -4,7 +4,11 @@ namespace Drapp.Metronome.Model
 {
     public class MetronomeModel
     {
-        public Color IndicatorColor { get; set; }
+        public Color AccentIndicatorColor { get; set; } = System.Drawing.Color.Black;
+        
+        public Color UnaccentIndicatorColor { get; set; } = System.Drawing.Color.Black;
+        
+        public Color BeatIndicatorColor { get; set; } = System.Drawing.Color.Black;
         public byte Bpm { get; set; }
         public Pattern Pattern { get; set; }
     }

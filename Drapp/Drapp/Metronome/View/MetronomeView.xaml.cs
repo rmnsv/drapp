@@ -7,11 +7,12 @@ namespace Drapp.Metronome.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MetronomeView : ContentView
     {
+
         public MetronomeView()
         {
             InitializeComponent();
 
-            BindingContext = new MetronomeViewModel(Color.Bisque, 120, Pattern.CreateDefault());
+            BindingContext = new MetronomeViewModel(120);
         }
     }
 }

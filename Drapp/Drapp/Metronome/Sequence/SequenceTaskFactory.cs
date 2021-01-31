@@ -13,22 +13,22 @@ namespace Drapp.Metronome.Sequence
                 {
                     while (true)
                     {
-                        foreach (SequenceItem item in sequence.Items)
+                        for (byte i = 0; i < sequence.Segmentation; i++)
                         {
                             if (cancellationToken.IsCancellationRequested)
                             {
                                 break;
                             }
+                            
+                            sequence.PerformActionAt(i);
 
-                            int itemTime = (int) item.GetTime();
+                            int itemTime = (int) sequence.GetSegmentTime();
 
                             if (itemTime > 0)
                             {
                                 //TODO: fractioned ms
                                 await Task.Delay(itemTime, cancellationToken);
                             }
-
-                            item.Action?.Invoke();
                         }
                     }
                 } catch (TaskCanceledException e)
