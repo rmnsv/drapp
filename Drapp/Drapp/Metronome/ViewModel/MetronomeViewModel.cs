@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using Drapp.Metronome.Model;
+using Drapp.Metronome.Sound;
 using Xamarin.Forms;
 
 namespace Drapp.Metronome.ViewModel
@@ -34,7 +35,7 @@ namespace Drapp.Metronome.ViewModel
                 Pattern = Patterns.First()
             };
 
-            _metronomePlayer = new MetronomePlayer(_metronomeModel);
+            _metronomePlayer = new MetronomePlayer(_metronomeModel, DependencyService.Get<IBeepService>());
             
             _metronomePlayer.OnVisualBeatOn += OnIndicatorOn;
             _metronomePlayer.OnVisualBeatOff += OnIndicatorOff;

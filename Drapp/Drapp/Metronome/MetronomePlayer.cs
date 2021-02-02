@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Drapp.Metronome.Model;
 using Drapp.Metronome.Sequence;
+using Drapp.Metronome.Sound;
 
 namespace Drapp.Metronome
 {
@@ -13,8 +14,9 @@ namespace Drapp.Metronome
         private float _mainInterval;
 
         private byte _visualDimTime = 2;
-
+        
         private MetronomeModel _metronomeModel;
+        private IBeepService _beepService;
         
         private SequenceEntity _sequence;
         private Task _metronomeTask;
@@ -23,9 +25,12 @@ namespace Drapp.Metronome
         public event Action<BeatType> OnVisualBeatOn;
         public event Action OnVisualBeatOff;
 
-        public MetronomePlayer(MetronomeModel model)
+        public MetronomePlayer(MetronomeModel model, IBeepService beepService)
         {
             _metronomeModel = model;
+            _beepService = beepService;
+
+            _beepService.OnFinished += () => OnVisualBeatOff?.Invoke();
 
             _mainInterval = CalculateMainInterval(_metronomeModel.Bpm);
 
@@ -44,8 +49,8 @@ namespace Drapp.Metronome
                 sequence.AddItem(item.Key, () =>
                 {
                     OnVisualBeatOn?.Invoke(item.Value);
+                    _beepService?.Beep(item.Value);
                 });
-                sequence.AddItem((byte) (item.Key + 1), () => OnVisualBeatOff?.Invoke());
             }
             
             sequence.AddItem((byte) (pattern.MaxSegmentation - 1), () => Console.WriteLine("Main interval end!"));

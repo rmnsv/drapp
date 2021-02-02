@@ -1,6 +1,6 @@
 ﻿namespace Drapp.Metronome
 {
-    internal enum BeatType
+    public enum BeatType
     {
         Beat = 0,
         Accented = 1,
