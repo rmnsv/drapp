@@ -6,8 +6,8 @@ namespace Drapp.Metronome.Sequence
 {
     internal class SequenceEntity
     {
-        private float _mainInterval;
-        private float _segmentTime;
+        private double _mainInterval;
+        private double _segmentTime;
 
         private SortedDictionary<byte, SequenceItem> _items;
         
@@ -17,7 +17,7 @@ namespace Drapp.Metronome.Sequence
 
         public byte Segmentation => _segmentation;
 
-        internal SequenceEntity(float mainInterval, byte segmentation)
+        internal SequenceEntity(double mainInterval, byte segmentation)
         {
             _mainInterval = mainInterval;
             _segmentation = segmentation;
@@ -48,13 +48,13 @@ namespace Drapp.Metronome.Sequence
             }
         }
         
-        internal void UpdateMsInterval(float newInterval)
+        internal void UpdateMsInterval(double newInterval)
         {
             _mainInterval = newInterval;
             UpdateSegmentTime();
         }
 
-        internal float GetSegmentTime()
+        internal double GetSegmentTime()
         {
             return _segmentTime;
         }

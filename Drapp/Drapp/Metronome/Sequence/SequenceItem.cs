@@ -10,7 +10,7 @@ namespace Drapp.Metronome.Sequence
         
         internal Action Action => _action;
 
-        internal SequenceItem(float mainInterval, byte segmentation, Action action)
+        internal SequenceItem(double mainInterval, byte segmentation, Action action)
         {
             _segmentation = segmentation;
             _action = action;

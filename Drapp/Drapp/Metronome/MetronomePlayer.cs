@@ -4,17 +4,15 @@ using System.Threading.Tasks;
 using Drapp.Metronome.Model;
 using Drapp.Metronome.Sequence;
 using Drapp.Metronome.Sound;
+using Drapp.Native;
 
 namespace Drapp.Metronome
 {
     internal class MetronomePlayer
     {
-
         private bool _isPlaying;
-        private float _mainInterval;
+        private double _mainInterval;
 
-        private byte _visualDimTime = 2;
-        
         private MetronomeModel _metronomeModel;
         private IBeepService _beepService;
         
@@ -38,7 +36,7 @@ namespace Drapp.Metronome
         }
 
         //TODO: input
-        private SequenceEntity BuildSequence(float mainInterval, Pattern pattern)
+        private SequenceEntity BuildSequence(double mainInterval, Pattern pattern)
         {
             SequenceEntity sequence = new SequenceEntity(mainInterval, pattern.MaxSegmentation);
             
@@ -66,9 +64,19 @@ namespace Drapp.Metronome
             _metronomeTask = SequenceTaskFactory.GetNew(_sequence, cancellationToken);
         }
 
-        private float CalculateMainInterval(byte newBpm)
+        private DrumMath _drumMath;
+
+        private double CalculateMainInterval(byte newBpm)
         {
-            return MetronomeUtil.BpmToMs(newBpm) * 4; //TODO: think about quarter note constant
+            if (_drumMath == null)
+            {
+                _drumMath = new DrumMath();
+            }
+            
+            double result = _drumMath.BpmToMs(newBpm) * 4;
+            
+            Console.WriteLine($"Drapp.Native says that bpm to ms is {result}!");
+            return result; //TODO: think about quarter note constant
         }
 
         internal void Play()
