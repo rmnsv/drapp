@@ -1,25 +1,16 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Input;
 using Drapp.Metronome.Model;
 using Drapp.Metronome.Sound;
+using Drapp.Pattern;
 using Xamarin.Forms;
 
 namespace Drapp.Metronome.ViewModel
 {
     public class MetronomeViewModel : INotifyPropertyChanged
     {
-        private const byte MIN_BPM = 10;
-        private const byte MAX_BPM = 240;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public ICommand PlayCommand { get; }
-        public ICommand StopCommand { get; }
-        public ICommand IncreaseBpmBy10Command { get; }
-        public ICommand DecreaseBpmBy10Command { get; }
-        public List<Pattern> Patterns { get; set; }
+        public List<MetronomePattern> Patterns { get; set; }
 
         private readonly MetronomeModel _metronomeModel;
         private readonly MetronomePlayer _metronomePlayer;
@@ -42,18 +33,20 @@ namespace Drapp.Metronome.ViewModel
 
             PlayCommand = new Command(Play);
             StopCommand = new Command(Stop);
-            IncreaseBpmBy10Command = new Command(IncreaseBpmBy10);
-            DecreaseBpmBy10Command = new Command(DecreaseBpmBy10);
+            IncreaseBpmBy1Command = new Command(() => ChangeBpm(1));
+            IncreaseBpmBy10Command = new Command(() => ChangeBpm(10));
+            DecreaseBpmBy1Command = new Command(() => ChangeBpm(-1));
+            DecreaseBpmBy10Command = new Command(() => ChangeBpm(-10));
         }
 
-        private void OnIndicatorOn(BeatType beatType)
+        private void OnIndicatorOn(EMetronomeBeep beepType)
         {
-            switch (beatType)
+            switch (beepType)
             {
-                case BeatType.Accented:
+                case EMetronomeBeep.Accented:
                     AccentIndicatorColor = Color.Chartreuse;
                     break;
-                case BeatType.Unaccented:
+                case EMetronomeBeep.Unaccented:
                     UnaccentIndicatorColor = Color.Aquamarine;
                     break;
             }
@@ -106,21 +99,9 @@ namespace Drapp.Metronome.ViewModel
             }
         }
         
-        public byte Bpm
-        {
-            get => _metronomeModel.Bpm;
-            set
-            {
-                if (_metronomeModel.Bpm != value && value >= MIN_BPM && value <= MAX_BPM)
-                {
-                    _metronomeModel.Bpm = value;
-                    _metronomePlayer?.SetBpm(value);
-                    OnPropertyChanged("Bpm");
-                }
-            }
-        }
+
         
-        public Pattern Pattern
+        public MetronomePattern Pattern
         {
             get => _metronomeModel.Pattern;
             set
@@ -134,29 +115,11 @@ namespace Drapp.Metronome.ViewModel
             }
         }
 
-        private void Play()
-        {
-            _metronomePlayer?.Play();
-        }
 
-        private void Stop()
-        {
-            _metronomePlayer?.Stop();
-        }
-
-        private void IncreaseBpmBy10()
-        {
-            Bpm += 10;
-        }
-
-        private void DecreaseBpmBy10()
-        {
-            Bpm -= 10;
-        }
 
         protected void OnPropertyChanged(string propName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
     }
-}
+}*/

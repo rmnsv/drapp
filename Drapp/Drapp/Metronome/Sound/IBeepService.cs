@@ -1,4 +1,5 @@
 ﻿using System;
+using Drapp.Pattern;
 
 namespace Drapp.Metronome.Sound
 {
@@ -6,6 +7,6 @@ namespace Drapp.Metronome.Sound
     {
         event Action OnFinished; 
         
-        void Beep(BeatType beatType);
+        void Beep(EMetronomeBeep beepType);
     }
 }

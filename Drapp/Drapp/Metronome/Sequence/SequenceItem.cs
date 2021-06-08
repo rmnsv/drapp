@@ -4,13 +4,13 @@ namespace Drapp.Metronome.Sequence
 {
     internal class SequenceItem
     {
-        private readonly byte _segmentation;
+        private readonly int _segmentation;
         
         private Action _action;
         
         internal Action Action => _action;
 
-        internal SequenceItem(double mainInterval, byte segmentation, Action action)
+        internal SequenceItem(double mainInterval, int segmentation, Action action)
         {
             _segmentation = segmentation;
             _action = action;

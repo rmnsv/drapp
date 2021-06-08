@@ -3,14 +3,6 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Drapp.Metronome.View.MetronomeView">
-    <ContentView.Resources>
-        <ResourceDictionary>
-            <Color x:Key="indicatorOff">#004D40</Color>
-            <Color x:Key="indicatorAccented">#004D40</Color>
-            <Color x:Key="indicatorUnaccented">#004D40</Color>
-            <Color x:Key="indicatorBeat">#004D40</Color>
-        </ResourceDictionary>
-    </ContentView.Resources>
     <ContentView.Content>
         <StackLayout>
             <Label Text="Test Metronome"
@@ -19,6 +11,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="70" />
+                    <RowDefinition Height="70" />
                     <RowDefinition Height="100"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -26,12 +19,15 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button Text="+10" Command="{Binding IncreaseBpmBy10Command}" />
-                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Bpm}" />
-                <Button Grid.Row="0" Grid.Column="2" Text="-10" Command="{Binding DecreaseBpmBy10Command}" />
-                <BoxView Grid.Column="0" Grid.Row="1" x:Name="AccentIndicator" Color="{Binding AccentIndicatorColor}"></BoxView>
-                <BoxView Grid.Column="1" Grid.Row="1" x:Name="UnaccentIndicator" Color="{Binding UnaccentIndicatorColor}"></BoxView>
-                <BoxView Grid.Column="2" Grid.Row="1" x:Name="BeatIndicator" Color="{Binding BeatIndicatorColor}"></BoxView>
+                <Button Grid.Row="0" Text="+1" Command="{Binding IncreaseBpmBy1Command}" />
+                <Button Grid.Row="0" Grid.Column="1" Text="-" />
+                <Button Grid.Row="0" Grid.Column="2" Text="-1" Command="{Binding DecreaseBpmBy1Command}" />
+                <Button Grid.Row="1" Grid.Column="0" Text="+10" Command="{Binding IncreaseBpmBy10Command}" />
+                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Bpm}" />
+                <Button Grid.Row="1" Grid.Column="2" Text="-10" Command="{Binding DecreaseBpmBy10Command}" />
+                <BoxView Grid.Column="0" Grid.Row="2" x:Name="AccentIndicator" Color="{Binding AccentIndicatorColor}"></BoxView>
+                <BoxView Grid.Column="1" Grid.Row="2" x:Name="UnaccentIndicator" Color="{Binding UnaccentIndicatorColor}"></BoxView>
+                <BoxView Grid.Column="2" Grid.Row="2" x:Name="BeatIndicator" Color="{Binding BeatIndicatorColor}"></BoxView>
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>

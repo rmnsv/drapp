@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Drapp.Metronome.View.TestSoundGeneratorView">
+    <ContentView.Content>
+        <StackLayout>
+            <Label x:Name="generator" Text="Generator" FontSize="Large" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" Text="C5" Clicked="OnC5" />
+                <Button Grid.Row="0" Grid.Column="1" Text="D5" Clicked="OnD5" />
+                <Button Grid.Row="0" Grid.Column="2" Text="E5" Clicked="OnE5" />
+                <Button Grid.Row="0" Grid.Column="3" Text="F5" Clicked="OnF5" />
+                <Button Grid.Row="0" Grid.Column="4" Text="G5" Clicked="OnG5" />
+                <Button Grid.Row="0" Grid.Column="5" Text="A5" Clicked="OnA5" />
+                <Button Grid.Row="0" Grid.Column="6" Text="B5" Clicked="OnB5" />
+                <Button Grid.Row="1" Grid.Column="0" Text="C6" Clicked="OnC6" />
+                <Button Grid.Row="1" Grid.Column="1" Text="D6" Clicked="OnD6" />
+                <Button Grid.Row="1" Grid.Column="2" Text="E6" Clicked="OnE6" />
+                <Button Grid.Row="1" Grid.Column="3" Text="F6" Clicked="OnF6" />
+                <Button Grid.Row="1" Grid.Column="4" Text="G6" Clicked="OnG6" />
+                <Button Grid.Row="1" Grid.Column="5" Text="A6" Clicked="OnA6" />
+                <Button Grid.Row="1" Grid.Column="6" Text="B6" Clicked="OnB6" />
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" Text="Kick" Clicked="OnKick" />
+                <Button Grid.Row="0" Grid.Column="1" Text="Snare" Clicked="OnSnare" />
+                <Button Grid.Row="0" Grid.Column="2" Text="Tom 1" Clicked="OnTom1" />
+                <Button Grid.Row="0" Grid.Column="3" Text="Tom 2" Clicked="OnTom2" />
+                <Button Grid.Row="0" Grid.Column="4" Text="Floor Tom" Clicked="OnFloorTom" />
+                <Button Grid.Row="1" Grid.Column="0" Text="Hi-Hat" Clicked="OnHiHat" />
+                <Button Grid.Row="1" Grid.Column="1" Text="Ride" Clicked="OnRide" />
+                <Button Grid.Row="1" Grid.Column="2" Text="Crash 1" Clicked="OnCrash1" />
+                <Button Grid.Row="1" Grid.Column="3" Text="Crash 2" Clicked="OnCrash2" />
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" Text="Mix 1" Clicked="OnMix1" />
+                <Button Grid.Row="0" Grid.Column="1" Text="Mix 2" Clicked="OnMix2" />
+                <Button Grid.Row="0" Grid.Column="2" Text="Mix 3" Clicked="OnMix3" />
+            </Grid>
+        </StackLayout>
+    </ContentView.Content>
+</ContentView>

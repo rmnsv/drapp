@@ -1,6 +1,6 @@
-﻿namespace Drapp.Metronome
+﻿namespace Drapp.Pattern
 {
-    public enum BeatType
+    public enum EMetronomeBeep
     {
         Beat = 0,
         Accented = 1,

@@ -10,9 +10,11 @@ namespace Drapp.Metronome.View
 
         public MetronomeView()
         {
-            InitializeComponent();
-
+            /*
             BindingContext = new MetronomeViewModel(120);
+            */
+            
+            InitializeComponent();
         }
     }
 }

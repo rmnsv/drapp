@@ -6,23 +6,23 @@ namespace Drapp.Metronome.Sequence
 {
     internal class SequenceEntity
     {
-        private double _mainInterval;
-        private double _segmentTime;
+        private int _mainInterval;
+        private int _measurementTime;
 
         private SortedDictionary<byte, SequenceItem> _items;
         
-        private byte _segmentation;
+        private int _measurementsCount;
 
         internal List<SequenceItem> Items => _items.Values.ToList();
 
-        public byte Segmentation => _segmentation;
+        public int MeasurementsCount => _measurementsCount;
 
-        internal SequenceEntity(double mainInterval, byte segmentation)
+        internal SequenceEntity(int mainInterval, int measurementsCount)
         {
             _mainInterval = mainInterval;
-            _segmentation = segmentation;
+            _measurementsCount = measurementsCount;
             
-            UpdateSegmentTime();
+            UpdateMeasurementTime();
         }
 
         internal void AddItem(byte segment, Action action)
@@ -37,7 +37,7 @@ namespace Drapp.Metronome.Sequence
                 _items[segment].AddAction(action);
                 return;
             }
-            _items.Add(segment, new SequenceItem(_mainInterval, _segmentation, action));
+            _items.Add(segment, new SequenceItem(_mainInterval, _measurementsCount, action));
         }
 
         internal void PerformActionAt(byte segment)
@@ -48,20 +48,20 @@ namespace Drapp.Metronome.Sequence
             }
         }
         
-        internal void UpdateMsInterval(double newInterval)
+        internal void UpdateMainInterval(int newInterval)
         {
             _mainInterval = newInterval;
-            UpdateSegmentTime();
+            UpdateMeasurementTime();
         }
 
-        internal double GetSegmentTime()
+        internal int GetMeasurementTime()
         {
-            return _segmentTime;
+            return _measurementTime;
         }
 
-        private void UpdateSegmentTime()
+        private void UpdateMeasurementTime()
         {
-            _segmentTime = _mainInterval / _segmentation;
+            _measurementTime = _mainInterval / _measurementsCount;
         }
     }
 }

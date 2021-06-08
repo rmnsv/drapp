@@ -5,13 +5,16 @@ using Drapp.Metronome.Model;
 using Drapp.Metronome.Sequence;
 using Drapp.Metronome.Sound;
 using Drapp.Native;
+using Drapp.Pattern;
+using Drapp.Sequence;
+using Drapp.Util;
 
 namespace Drapp.Metronome
 {
     internal class MetronomePlayer
     {
         private bool _isPlaying;
-        private double _mainInterval;
+        private int _mainInterval;
 
         private MetronomeModel _metronomeModel;
         private IBeepService _beepService;
@@ -20,7 +23,7 @@ namespace Drapp.Metronome
         private Task _metronomeTask;
         private CancellationTokenSource _cancellationTokenSource;
 
-        public event Action<BeatType> OnVisualBeatOn;
+        public event Action<EMetronomeBeep> OnVisualBeatOn;
         public event Action OnVisualBeatOff;
 
         public MetronomePlayer(MetronomeModel model, IBeepService beepService)
@@ -30,15 +33,15 @@ namespace Drapp.Metronome
 
             _beepService.OnFinished += () => OnVisualBeatOff?.Invoke();
 
-            _mainInterval = CalculateMainInterval(_metronomeModel.Bpm);
+            //_mainInterval = CalculateMainInterval(_metronomeModel.Bpm);
 
-            _sequence = BuildSequence(_mainInterval, _metronomeModel.Pattern);
+            //_sequence = BuildSequence(_mainInterval, _metronomeModel.Pattern);
         }
 
         //TODO: input
-        private SequenceEntity BuildSequence(double mainInterval, Pattern pattern)
+        private SequenceEntity BuildSequence(int mainInterval, MetronomePattern pattern)
         {
-            SequenceEntity sequence = new SequenceEntity(mainInterval, pattern.MaxSegmentation);
+            SequenceEntity sequence = new SequenceEntity(mainInterval, pattern.MaxMeasurements);
             
             sequence.AddItem(0, () => Console.WriteLine("Main interval begin!"));
 
@@ -51,7 +54,7 @@ namespace Drapp.Metronome
                 });
             }
             
-            sequence.AddItem((byte) (pattern.MaxSegmentation - 1), () => Console.WriteLine("Main interval end!"));
+            sequence.AddItem((byte) (pattern.MaxMeasurements - 1), () => Console.WriteLine("Main interval end!"));
 
             return sequence;
         }
@@ -61,19 +64,19 @@ namespace Drapp.Metronome
             _cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = _cancellationTokenSource.Token;
 
-            _metronomeTask = SequenceTaskFactory.GetNew(_sequence, cancellationToken);
+            _metronomeTask = SequenceFactory.GetNewOLD(_sequence, cancellationToken);
         }
 
         private DrumMath _drumMath;
 
-        private double CalculateMainInterval(byte newBpm)
+        private int CalculateMainInterval(int newBpm)
         {
             if (_drumMath == null)
             {
                 _drumMath = new DrumMath();
             }
             
-            double result = _drumMath.BpmToMs(newBpm) * 4;
+            int result = TimeUtil.BpmToTicks(newBpm) * 4;
             
             Console.WriteLine($"Drapp.Native says that bpm to ms is {result}!");
             return result; //TODO: think about quarter note constant
@@ -108,13 +111,13 @@ namespace Drapp.Metronome
             Console.WriteLine("Metronome stopped!");
         }
 
-        internal void SetBpm(byte newBpm)
+        internal void SetBpm(int newBpm)
         {
             _mainInterval = CalculateMainInterval(newBpm);
-            _sequence.UpdateMsInterval(_mainInterval);
+            _sequence.UpdateMainInterval(_mainInterval);
         }
 
-        internal void SetPattern(Pattern newPattern)
+        internal void SetPattern(MetronomePattern newPattern)
         {
             if (_isPlaying)
             {

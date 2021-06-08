@@ -3,6 +3,7 @@ using AVFoundation;
 using Drapp.iOS.Sound;
 using Drapp.Metronome;
 using Drapp.Metronome.Sound;
+using Drapp.Pattern;
 using Foundation;
 using Xamarin.Forms;
 
@@ -25,25 +26,25 @@ namespace Drapp.iOS.Sound
             _unaccentMediaPlayer = SetupMediaPlayer("sounds/metronome/unaccent.mp3");
         }
         
-        public void Beep(BeatType beatType)
+        public void Beep(EMetronomeBeep beepType)
         {
-            switch (beatType)
+            switch (beepType)
             {
-                case BeatType.Beat:
+                case EMetronomeBeep.Beat:
                     if (_beepMediaPlayer.Playing)
                     {
                         _beepMediaPlayer?.Stop();
                     }
                     _beepMediaPlayer?.Play();
                     break;
-                case BeatType.Accented:
+                case EMetronomeBeep.Accented:
                     if (_accentMediaPlayer.Playing)
                     {
                         _accentMediaPlayer?.Stop();
                     }
                     _accentMediaPlayer?.Play();
                     break;
-                case BeatType.Unaccented:
+                case EMetronomeBeep.Unaccented:
                     if (_unaccentMediaPlayer.Playing)
                     {
                         _unaccentMediaPlayer?.Stop();

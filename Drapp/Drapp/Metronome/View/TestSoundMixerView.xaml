@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Drapp.Metronome.View.TestSoundMixerView">
+    <ContentView.Content>
+        <StackLayout>
+            <Label x:Name="mixer" Text="Mixer" FontSize="Large" />
+            <Label x:Name="gain1" Text="Gain 1" />
+            <Slider Minimum="0" Maximum="1" Value="0.5" ValueChanged="OnGain1Change"
+                    MinimumTrackColor="DeepPink" MaximumTrackColor="Gray" ThumbColor="DeepPink" />
+            <Label x:Name="sound1Label" Text="Sound 1" />
+            <Picker x:Name="Sound1" HorizontalOptions="FillAndExpand" SelectedIndex="0" />
+                <Label x:Name="sound2Label" Text="Sound 2" />
+            <Picker x:Name="Sound2" HorizontalOptions="FillAndExpand" SelectedIndex="0" />
+                <Label x:Name="gain2" Text="Gain 2" />
+            <Slider Minimum="0" Maximum="1" Value="0.5" ValueChanged="OnGain2Change"
+                    MinimumTrackColor="DeepPink" MaximumTrackColor="Gray" ThumbColor="DeepPink" />
+            <Button Text="Mix!" Clicked="OnMixButton" />
+        </StackLayout>
+    </ContentView.Content>
+</ContentView>

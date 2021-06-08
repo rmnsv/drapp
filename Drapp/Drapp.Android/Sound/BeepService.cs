@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Android.Content;
 using Android.Content.Res;
 using Android.Media;
+using Android.Util;
 using Drapp.Android.Sound;
 using Drapp.Metronome;
 using Drapp.Metronome.Sound;
+using Drapp.Pattern;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(BeepService))]
@@ -12,97 +16,77 @@ namespace Drapp.Android.Sound
 {
     public class BeepService : IBeepService
     {
-        private MediaPlayer _accentMediaPlayer;  
-        private MediaPlayer _unaccentMediaPlayer; 
-        private MediaPlayer _beepMediaPlayer;
-        
-        private Dictionary<BeatType, bool> _playerReadiness = new Dictionary<BeatType, bool>()
+        private SoundPool _pool;
+
+        private Dictionary<EMetronomeBeep, int> _beepIds = new Dictionary<EMetronomeBeep, int>()
         {
-            {BeatType.Beat, false},
-            {BeatType.Accented, false},
-            {BeatType.Unaccented, false}
+            {EMetronomeBeep.Beat, 0},
+            {EMetronomeBeep.Accented, 0},
+            {EMetronomeBeep.Unaccented, 0}
         };
         
+        
+        //TODO: remove if unusable
         public event Action OnFinished;
 
         public BeepService()
         {
-            _beepMediaPlayer = SetupMediaPlayer(BeatType.Beat, "sounds/metronome/beat.mp3");
-            _accentMediaPlayer = SetupMediaPlayer(BeatType.Accented, "sounds/metronome/accent.mp3");
-            _unaccentMediaPlayer = SetupMediaPlayer(BeatType.Unaccented, "sounds/metronome/unaccent.mp3");
+            SoundPool.Builder builder = new SoundPool.Builder();
+
+            builder.SetMaxStreams(3);
+            
+            AudioAttributes attributes = new AudioAttributes.Builder()
+                .SetUsage(AudioUsageKind.Media)
+                ?.SetContentType(AudioContentType.Sonification)
+                ?.Build();
+
+            builder.SetAudioAttributes(attributes);
+
+            _pool = builder.Build();
+
+            if (_pool != null)
+            {
+                AssetFileDescriptor beepAfd = null;
+                AssetFileDescriptor accentAfd = null;
+                AssetFileDescriptor unaccentAfd = null;
+
+                try
+                {
+                    Context context = Platform.AppContext;
+                    
+                    if (context?.Assets == null)
+                    {
+                        throw new AndroidException();
+                    }
+
+                    beepAfd = context.Assets.OpenFd("sounds/metronome/beat.mp3");
+                    accentAfd = context.Assets.OpenFd("sounds/metronome/accent.mp3");
+                    unaccentAfd = context.Assets.OpenFd("sounds/metronome/unaccent.mp3");
+                }  
+                catch (Exception ex)  
+                {  
+                    Console.WriteLine("Error openfd: " + ex);  
+                }
+
+                if (beepAfd != null && accentAfd != null && unaccentAfd != null)
+                {
+                    _beepIds[EMetronomeBeep.Beat] = _pool.Load(beepAfd, 1);
+                    _beepIds[EMetronomeBeep.Accented] = _pool.Load(accentAfd, 1);
+                    _beepIds[EMetronomeBeep.Unaccented] = _pool.Load(unaccentAfd, 1);
+                }
+            }
         }
         
-        public void Beep(BeatType beatType)
+        public void Beep(EMetronomeBeep beepType)
         {
-            if (!_playerReadiness[beatType])
-            {
-                return;
-            }
-            
-            switch (beatType)
-            {
-                case BeatType.Beat:
-                    if (_beepMediaPlayer.IsPlaying)
-                    {
-                        _beepMediaPlayer?.Stop();
-                    }
-                    _beepMediaPlayer?.Start();
-                    break;
-                case BeatType.Accented:
-                    if (_accentMediaPlayer.IsPlaying)
-                    {
-                        _accentMediaPlayer?.Stop();
-                    }
-                    _accentMediaPlayer?.Start();
-                    break;
-                case BeatType.Unaccented:
-                    if (_unaccentMediaPlayer.IsPlaying)
-                    {
-                        _unaccentMediaPlayer?.Stop();
-                    }
-                    _unaccentMediaPlayer?.Start();
-                    break;
-            }
+            //OnFinished?.Invoke(); 
+            _pool.Play(_beepIds[beepType], 1.0f, 1.0f, 1, 0, 1);
         }
-
-        private MediaPlayer SetupMediaPlayer(BeatType beatType, string beepFile)
-        {
-            AssetFileDescriptor afd = null;
-
-            try  
-            {
-                afd = Forms.Context.Assets.OpenFd(beepFile);  
-            }  
-            catch (Exception ex)  
-            {  
-                Console.WriteLine("Error openfd: " + ex);  
-            }  
-            
-            if (afd != null)  
-            {  
-                System.Diagnostics.Debug.WriteLine("Length " + afd.Length);  
-                
-                MediaPlayer player = new MediaPlayer();
-                player.Prepared += (sender, args) =>  
-                {
-                    player.Completion += PlayerFinishedPlaying;
-                    _playerReadiness[beatType] = true;
-                };
-
-                player.Reset();  
-                player.SetVolume(1.0f, 1.0f);  
-  
-                player.SetDataSource(afd.FileDescriptor, afd.StartOffset, afd.Length);  
-                player.PrepareAsync();
-                return player;
-            }  
-            
-            return null;
-        }
+        
         
         private void PlayerFinishedPlaying(object sender, EventArgs e)  
         {  
             OnFinished?.Invoke();  
-        } 
+        }
     }
 }

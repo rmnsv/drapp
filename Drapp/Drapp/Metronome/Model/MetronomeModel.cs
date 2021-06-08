@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using Drapp.Pattern;
+using Xamarin.Forms;
 
 namespace Drapp.Metronome.Model
 {
@@ -9,7 +10,5 @@ namespace Drapp.Metronome.Model
         public Color UnaccentIndicatorColor { get; set; } = System.Drawing.Color.Black;
         
         public Color BeatIndicatorColor { get; set; } = System.Drawing.Color.Black;
-        public byte Bpm { get; set; }
-        public Pattern Pattern { get; set; }
     }
 }
